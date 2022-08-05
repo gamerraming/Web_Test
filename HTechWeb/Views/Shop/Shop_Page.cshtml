@@ -1,0 +1,163 @@
+﻿@model HTechWeb.Models.DTO.Shop.Response.ShopGetResponse.Result
+@{
+    ViewBag.Title = "Shop Page";
+    Layout = "~/Views/_Layout/_layout.cshtml";
+}
+<!-- Breadcrumb Start -->
+<div class="breadcrumb-wrap">
+    <div class="container-fluid">
+        <ul class="breadcrumb">
+            <li class="breadcrumb-item"><a href="@Url.Action("Index", "Home")">Home</a></li>
+            <li class="breadcrumb-item active">Shop</li>
+        </ul>
+    </div>
+</div>
+<!-- Breadcrumb End -->
+<!-- Product List Start -->
+<div class="product-view">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="row">
+                    <!--Box Shop Information Start-->
+                    <div class="col-md-12">
+                        <div class="product-view-top" style="border: 2px solid rgb(248, 107, 97);border-radius:10px;">
+                            <div class="row text-center">
+                                <div class="col-md-5">
+                                    <div class="mb-3" style="height: 100px;">
+                                        <img src="~/Others/images/client.jpg" alt="Image" class="shadow" style="height: 100%; border-radius: 30px;">
+                                    </div>
+                                    <h4>@Model.shopName</h4>
+                                    <div>
+                                        <div>
+                                            <i class="fa fa-id-card-o" aria-hidden="true"></i>&nbsp;
+                                            <strong>@Model.shopEmail</strong>
+                                        </div>
+                                        <div>
+                                            <i class="fa fa-phone" aria-hidden="true"></i>&nbsp;
+                                            <strong>@Model.shopPhone</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-7">
+                                    ajsdhaskljdhasjkhdajsl khd
+                                    ajsdhaskljdhasjkhdajsl khd
+                                    ajsdhaskljdhasjkhdajsl khd
+                                    ajsdhaskljdhasjkhdajsl khd
+                                    ajsdhaskljdhasjkhdajsl khd
+                                    ajsdhaskljdhasjkhdajsl khd
+                                    ajsdhaskljdhasjkhdajsl khd
+                                    ajsdhaskljdhasjkhdajsl khd
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--Box Shop Information End-->
+                    <div class="col-md-12">
+                        <div class="product-view-top">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <span><strong>Search product in shop</strong></span>
+                                    <div class="product-search">
+                                        <form action="/Shop/SearchInShop/@Model.shopId" id="formSearchInShop" method="post" hidden></form>
+                                        <input type="text" form="formSearchInShop" name="shopProductKeyWord" placeholder="Search">
+                                        <button form="formSearchInShop"><i class="fa fa-search"></i></button>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <span><strong>Sort</strong></span>
+                                    <div class="product-short">
+                                        <div class="dropdown">
+                                            <div class="dropdown-toggle" id="proSort" data-toggle="dropdown">Product short by</div>
+                                            <div class="dropdown-menu dropdown-menu-right">
+                                                <a href="@Url.Action("SearchSortBy","Shop",new {id=Model.shopId,sort ="productName"})" class="dropdown-item">A-->Z</a>
+                                                <a href="@Url.Action("SearchSortBy","Shop",new {sort ="MostSale"})" class="dropdown-item">Most sale</a>
+                                            </div>
+                                            <script>
+                                                $('#proSort').click(function () {
+
+                                                });
+                                            </script>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    @{
+                        if (Model.products.Count > 0)
+                        {
+                            int index = 1;
+                            foreach (var item in Model.products)
+                            {
+                                <div class="col-md-4">
+                                    <div class="product-item">
+                                        <div class="product-title">
+                                            <a href="#">@item.productName</a>
+                                            <div class="ratting">
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                            </div>
+                                        </div>
+                                        <div class="product-image">
+                                            <a href="product-detail.html">
+                                                <img src="~/Others/images/product-@(index++).jpg" alt="Product Image">
+                                            </a>
+                                            <div class="product-action">
+                                                <a href="@Url.Action("AddToCart", "Home", new { id = item.productId, qty = 1 })"><i class="fa fa-cart-plus"></i></a>
+                                                <a href="@Url.Action("Product_Details", "Shop", new { id = item.productId })"><i class="fa fa-search"></i></a>
+                                            </div>
+                                        </div>
+                                        <div class="product-price">
+                                            <h3><span>$</span>@item.price.ToString("#,###", System.Globalization.CultureInfo.GetCultureInfo("vi-VN"))</h3>
+                                            <a class="btn" href="@Url.Action("BuyNow", "Home", new { id = item.productId })"><i class="fa fa-shopping-cart"></i>Buy Now</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        }
+                    }
+                </div>
+
+                <!-- Pagination Start -->
+                <div class="col-md-12">
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item disabled">
+                                <a class="page-link" href="#" tabindex="-1">Previous</a>
+                            </li>
+                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                            <li class="page-item"><a class="page-link" href="#">2</a></li>
+                            <li class="page-item"><a class="page-link" href="#">3</a></li>
+                            <li class="page-item">
+                                <a class="page-link" href="#">Next</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+                <!-- Pagination Start -->
+            </div>
+
+
+        </div>
+    </div>
+</div>
+<!-- Product List End -->
+<!-- Brand Start -->
+<div class="brand">
+    <div class="container-fluid">
+        <div class="brand-slider">
+            <div class="brand-item"><img src="~/Others/images/brand-1.png" alt=""></div>
+            <div class="brand-item"><img src="~/Others/images/brand-2.png" alt=""></div>
+            <div class="brand-item"><img src="~/Others/images/brand-3.png" alt=""></div>
+            <div class="brand-item"><img src="~/Others/images/brand-4.png" alt=""></div>
+            <div class="brand-item"><img src="~/Others/images/brand-5.png" alt=""></div>
+            <div class="brand-item"><img src="~/Others/images/brand-6.png" alt=""></div>
+        </div>
+    </div>
+</div>
+<!-- Brand End -->

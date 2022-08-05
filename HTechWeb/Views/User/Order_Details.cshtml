@@ -1,0 +1,89 @@
+﻿@model HTechWeb.Models.DTO.Home.Order.Response.OrderGetResponse.Result
+@{
+    ViewBag.Title = "Order Details";
+    Layout = "~/Views/_Layout/_layout.cshtml";
+}
+
+
+<!-- Breadcrumb Start -->
+<div class="breadcrumb-wrap">
+    <div class="container-fluid">
+        <ul class="breadcrumb">
+            <li class="breadcrumb-item"><a href="@Url.Action("Index","Home")">Home</a></li>
+            <li class="breadcrumb-item"><a href="@Url.Action("User_Profile","User")">User</a></li>
+            <li class="breadcrumb-item active">Order Details</li>
+        </ul>
+    </div>
+</div>
+<!-- Breadcrumb End -->
+<!-- Order Details Start -->
+<div class="wishlist-page">
+    <div class="container-fluid">
+        <div class="contact">
+            <div class="row">
+                <div class="col-md-5">
+                    <div class="contact-info">
+                        <h2>Shipping Information</h2>
+                        <h3><i class="fas fa-user"></i>@Model.deliveryName</h3>
+                        <h3><i class="fa fa-phone"></i>@Model.deliveryPhone</h3>
+                        <h3><i class="fa fa-map-marker"></i>@Model.deliveryAddress</h3>
+                    </div>
+                </div>
+                <div class="col-md-7">
+                    <div class="contact-info">
+                        <h2>Order Status</h2>
+                        <h3><i class="fas fa-calendar-day"></i>@Model.status</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="wishlist-page-inner">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="table-responsive">
+                        <div>
+                            <h3>
+                                <i class="fas fa-store"></i>
+                                @Model.shopName<a href="@Url.Action("Shop_Page","Shop",new { id= Model.shopId})" class="btn">Go to Shop</a>
+                            </h3>
+                        </div>
+                        @if (Model.status == "Pending")
+                        {
+                            <div>
+                                <h3>
+                                    <a href="@Url.Action("CancelOrder","User",new { id= Model.orderId})" class="btn">Cancel</a>
+                                </h3>
+                            </div>
+                        }
+                        <table class="table table-bordered">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th style="text-align: left;">Product</th>
+                                    <th>Price</th>
+                                </tr>
+                            </thead>
+                            <tbody class="align-middle">
+                                @{
+                                    int index = 1;
+                                    foreach (var item in Model.orderDetails)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <div class="img">
+                                                    <a href="@Url.Action("Product_Details","Shop",new {id = item.productId })"><img src="~/Others/images/product-@(index++).jpg" alt="Image"></a>
+                                                    <p><strong><a href="@Url.Action("Product_Details","Shop",new {id = item.productId })">@item.productName</a></strong><br>@item.productVariationName <br>@item.quantity </p>
+                                                </div>
+                                            </td>
+                                            <td>@(item.price.ToString("#,###", System.Globalization.CultureInfo.GetCultureInfo("vi-VN")))</td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Order Details End -->

@@ -1,0 +1,162 @@
+﻿
+@{
+    ViewBag.Title = "Cart";
+    Layout = "~/Views/_Layout/_layout.cshtml";
+    List<HTechWeb.Models.DTO.Home.Cart.Response.CartResponse.Cart> listCart = null;
+    decimal subTotalPrice = 0;
+    if (Session["ListCart"] != null)
+    {
+        listCart = Session["ListCart"] as List<HTechWeb.Models.DTO.Home.Cart.Response.CartResponse.Cart>;
+    }
+    var listVoucher = new HTechWeb.Models.DTO.Home.Voucher.Response.VoucherResponse.Result();
+    if (Session["ListVoucher"] != null)
+    {
+        listVoucher = Session["ListVoucher"] as HTechWeb.Models.DTO.Home.Voucher.Response.VoucherResponse.Result;
+    }
+}
+<!-- Breadcrumb Start -->
+<div class="breadcrumb-wrap">
+    <div class="container-fluid">
+        <ul class="breadcrumb">
+            <li class="breadcrumb-item"><a href="@Url.Action("Index","Home")">Home</a></li>
+            <li class="breadcrumb-item"><a href="@Url.Action("Product_List","Home")">Products</a></li>
+            <li class="breadcrumb-item active">Cart</li>
+        </ul>
+    </div>
+</div>
+<!-- Breadcrumb End -->
+<!-- Cart Start -->
+<div class="cart-page">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="cart-page-inner">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Price</th>
+                                    <th>Quantity</th>
+                                    <th>Total</th>
+                                    <th>Remove</th>
+                                </tr>
+                            </thead>
+                            <tbody class="align-middle">
+                                @{
+                                    if (listCart != null)
+                                    {
+                                        if (listCart.Count > 0)
+                                        {
+                                            int index = 1;
+                                            foreach (var item in listCart)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        <div class="img">
+                                                            <a href="#"><img src="@Url.Content(item.productImage)" alt="Image"></a>
+                                                            <p><strong>@item.productName</strong><br />@item.productVariantName</p>
+                                                        </div>
+                                                    </td>
+                                                    <td>$@item.price.ToString("#,###", System.Globalization.CultureInfo.GetCultureInfo("vi-VN"))</td>
+                                                    <td>
+                                                        <div class="qty">
+                                                            <form action="/Home/UpdateCart/@item.cartDetailId" id="formUpdateCart_@index" method="post" hidden></form>
+                                                            <button form="formUpdateCart_@index" class="btn-minus"><i class="fa fa-minus"></i></button>
+                                                            <input form="formUpdateCart_@index" type="text" id="quantityProduct_@index" name="quantityProduct_@index" value="@item.quantity">
+                                                            <button form="formUpdateCart_@index" class="btn-plus"><i class="fa fa-plus"></i></button>
+                                                        </div>
+                                                    </td>
+                                                    <td>$@((item.price * item.quantity).ToString("#,###", System.Globalization.CultureInfo.GetCultureInfo("vi-VN")))</td>
+                                                    <td><a href="@Url.Action("RemoveCart","Home",new { id=item.cartDetailId})"><i class="fa fa-trash"></i></a></td>
+                                                </tr>
+                                                <script>
+                                                    //check Product QUantity
+                                                    $('#quantityProduct_@index').change(function () {
+                                                        if ($(this).val() <= 0) $(this).val("1");
+                                                        else $(this).val((parseInt($(this).val())+1).toString())
+                                                    });
+                                                </script>
+
+                                                index++;
+                                                subTotalPrice += item.price * item.quantity;
+                                            }
+                                        }
+                                    }
+
+
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="cart-page-inner">
+                    <form action="/Home/Purchase" method="post">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label><strong>Voucher</strong></label>
+                                <div class="coupon">
+                                    <select class="custom-select" id="selectVoucher" name="selectVoucher">
+                                        <option value="blankVoucher" selected>Coupon Code</option>
+                                        @{
+                                            if (listVoucher != null)
+                                            {
+                                                if (listVoucher.totalCount > 0)
+                                                {
+                                                    foreach (var item in listVoucher.data)
+                                                    {
+                                                        <option value="@item.voucherId/@item.discount">@item.voucherName</option>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <option value="blankVoucher" selected>Coupon Code</option>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <option value="blankVoucher" selected>Coupon Code</option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="cart-summary">
+                                    <div class="cart-content">
+                                        <h1>Cart Summary</h1>
+                                        <p>Sub Total<span>$@(subTotalPrice.ToString("#,###", System.Globalization.CultureInfo.GetCultureInfo("vi-VN")))</span></p>
+                                        <p>Voucher<span id="textVoucher">$0</span></p>
+                                        <h2>Grand Total<span id="grandTotalPrice">$0</span></h2>
+                                    </div>
+                                    <div class="cart-btn">
+                                        <input type="submit" value="Checkout" class="btn" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Cart End -->
+<!--/// JS ///-->
+<script>
+    $('#grandTotalPrice').html("$@(subTotalPrice.ToString("#,###", System.Globalization.CultureInfo.GetCultureInfo("vi-VN")))");
+    $('#selectVoucher').click(function () {
+        var voucherPrice = $(this).val().split('/')[1];
+        if (!isNaN(voucherPrice)) {
+            $('#textVoucher').html("$" + parseInt(voucherPrice).toLocaleString("vi-VN"));
+            var grandTotalPrice = @Decimal.Round(subTotalPrice) - parseInt(voucherPrice)
+            $('#grandTotalPrice').html("$" + grandTotalPrice.toLocaleString("vi-VN"));
+        } else {
+            $('#textVoucher').html("$0");
+            $('#grandTotalPrice').html("$@(subTotalPrice.ToString("#,###", System.Globalization.CultureInfo.GetCultureInfo("vi-VN")))");
+        }
+
+    });
+</script>

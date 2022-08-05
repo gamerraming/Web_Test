@@ -1,0 +1,457 @@
+﻿@model HTechWeb.Models.DTO.User.Response.UserProfileResponse.Result
+@{
+    ViewBag.Title = "User Profile";
+    Layout = "~/Views/_Layout/_layout.cshtml";
+    var listOrder = new HTechWeb.Models.DTO.Home.Order.Response.OrderResponse.Result();
+    if (Session["ListOrder"] != null)
+    {
+        listOrder = Session["ListOrder"] as HTechWeb.Models.DTO.Home.Order.Response.OrderResponse.Result;
+    }
+    string eventAction = "";
+    if (ViewBag.showListOrder != null)
+    {
+        if ((bool)ViewBag.showListOrder)
+        {
+            eventAction = "orderListShow";
+        }
+    }
+}
+<!-- Breadcrumb Start -->
+<div class="breadcrumb-wrap">
+    <div class="container-fluid">
+        <ul class="breadcrumb">
+            <li class="breadcrumb-item"><a href="@Url.Action("Index","Home")">Home</a></li>
+            <li class="breadcrumb-item"><a href="@Url.Action("User_Profile","User")">User</a></li>
+            <li class="breadcrumb-item active">My Account</li>
+        </ul>
+    </div>
+</div>
+<!-- Breadcrumb End -->
+<!-- My Account Start -->
+@{ if (Model != null)
+    {
+        <div class="my-account">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="text-center">
+                            <img src="@Model.profilePicture" style="width:100%;height:100%;" alt="Alternate Text" />
+                            <span><h3>@Model.username</h3></span>
+                        </div>
+                        <div class="nav flex-column nav-pills" role="tablist" aria-orientation="vertical">
+                            @{
+                                if (eventAction == "orderListShow")
+                                {
+                                    <a class="nav-link" id="account-nav" data-toggle="pill" href="#account-tab" role="tab"><i class="fa fa-user"></i>Account Details</a>
+                                    <a class="nav-link active" id="orders-nav" data-toggle="pill" href="#orders-tab" role="tab"><i class="fa fa-shopping-bag"></i>Orders</a>
+                                    <a class="nav-link" id="shop-nav" data-toggle="pill" href="#shop-tab" role="tab"><i class="fas fa-shopping-bag"></i>Open Shop</a>
+                                    <a class="nav-link" id="payment-nav" data-toggle="pill" href="#payment-tab" role="tab"><i class="fa fa-credit-card"></i>Payment Method</a>
+                                    <a class="nav-link" href="@Url.Action("UserLogout", "User")"><i class="fa fa-sign-out-alt"></i>Logout</a>
+                                }
+                                else
+                                {
+                                    <a class="nav-link active" id="account-nav" data-toggle="pill" href="#account-tab" role="tab"><i class="fa fa-user"></i>Account Details</a>
+                                    <a class="nav-link" id="orders-nav" data-toggle="pill" href="#orders-tab" role="tab"><i class="fa fa-shopping-bag"></i>Orders</a>
+                                    <a class="nav-link" id="shop-nav" data-toggle="pill" href="#shop-tab" role="tab"><i class="fas fa-shopping-bag"></i>Open Shop</a>
+                                    <a class="nav-link" id="payment-nav" data-toggle="pill" href="#payment-tab" role="tab"><i class="fa fa-credit-card"></i>Payment Method</a>
+                                    <a class="nav-link" href="@Url.Action("UserLogout", "User")"><i class="fa fa-sign-out-alt"></i>Logout</a>
+                                }
+                            }
+                        </div>
+                    </div>
+                    <div class="col-md-9">
+                        <div class="tab-content">
+                            @{
+                                if (eventAction == "orderListShow")
+                                {
+                                    <div class="tab-pane fade" id="account-tab" role="tabpanel" aria-labelledby="account-nav">
+                                        <h4>Account Details</h4>
+                                        <form action="/User/UserUpdate" method="post">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <label>First Name</label>
+                                                    <input class="form-control" type="text" name="usFName" placeholder="First Name" value="@Model.name">
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label>Last Name</label>
+                                                    <input class="form-control" type="text" name="usLName" placeholder="Last Name" value="@Model.surname">
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label>Phone Number</label>
+                                                    <input class="form-control" type="text" name="usPhone" placeholder="Mobile" value="@Model.phone">
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label>Email</label>
+                                                    <input class="form-control" type="text" placeholder="Email" value="@Model.email" disabled>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label>Picutre</label>
+                                                    <input class="form-control" name="usPicture" type="file" value="">
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label>Date Of Birth</label>
+                                                    <input class="form-control" type="date" name="usBirthday" value="@Model.birthDay.Value.ToString("yyyy-MM-dd")">
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label>Gender</label>
+                                                    <div>
+                                                        @{
+                                                            if (Model.gender == 1)
+                                                            {
+                                                                <label>
+                                                                    <input type="radio" name="usGender" value="1" checked>&nbsp;Boy
+                                                                </label>
+                                                                <span>&nbsp;</span>
+                                                                <label>
+                                                                    <input type="radio" name="usGender" value="0">&nbsp;Girl
+                                                                </label>
+                                                            }
+                                                            else
+                                                            {
+                                                                <label>
+                                                                    <input type="radio" name="usGender" value="1">&nbsp;Boy
+                                                                </label>
+                                                                <span>&nbsp;</span>
+                                                                <label>
+                                                                    <input type="radio" name="usGender" value="0" checked>&nbsp;Girl
+                                                                </label>
+                                                            }
+                                                        }
+
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label>Address</label>
+                                                    <input class="form-control" type="text" name="usAddress" placeholder="Address" value="@Model.address">
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <input type="submit" class="btn" value="Update Account" />
+                                                    <br><br>
+                                                </div>
+
+                                            </div>
+                                        </form>
+                                        <h4>Password change</h4>
+                                        <form action="/User/UserPasswordChange" method="post">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <label>Current Password</label>
+                                                    <input class="form-control" name="oldPassword" type="password" placeholder="Current Password" required>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label>New Password</label>
+                                                    <input class="form-control" name="newPassword" type="password" placeholder="New Password" required>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label>Confirm Password</label>
+                                                    <input class="form-control" name="reNewPassword" type="password" placeholder="Confirm Password" required>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <input type="submit" value="Save Changes" class="btn" />
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="tab-pane fade show active" id="orders-tab" role="tabpanel" aria-labelledby="orders-nav">
+                                        <div class="table-responsive">
+                                            @if (listOrder.data.Count > 0)
+                                            {
+                                                <table class="table table-bordered">
+                                                    <thead class="thead-dark">
+                                                        <tr>
+                                                            <th>No</th>
+                                                            <th>Order Id</th>
+                                                            <th>Date</th>
+                                                            <th>Price</th>
+                                                            <th>Status</th>
+                                                            <th>Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @if (listOrder.totalCount > 0)
+                                                        {
+                                                            int index = 1;
+                                                            foreach (var item in listOrder.data)
+                                                            {
+                                                                <tr>
+                                                                    <td>@(index++)</td>
+                                                                    <td>@item.orderId</td>
+                                                                    <td>@item.creationTime.ToString("yyyy/MM/dd")</td>
+                                                                    <td>@(String.Format("{0:n0}",Decimal.Round(item.totalPrice)))</td>
+                                                                    <td>@item.status</td>
+                                                                    <td><a href="@Url.Action("Order_Details","User",new {id = item.orderId })" class="btn">View</a></td>
+                                                                </tr>
+                                                            }
+                                                        }
+                                                    </tbody>
+                                                </table>
+                                            }
+                                            else
+                                            {
+                                                <h2 class="text-center">Empty!<br /> You haven't make any order.</h2>
+                                            }
+                                        </div>
+                                        <!-- Pagination Start -->
+                                        @if (listOrder != null)
+                                        {
+                                            if (listOrder.totalPages > 0)
+                                            {
+                                                int pageIndex = 1;
+                                                if (listOrder.pageIndex > 1)
+                                                {
+                                                    pageIndex = listOrder.pageIndex;
+                                                }
+                                                <div class="quantity text-center">
+                                                    <div class="">
+                                                        @if (listOrder.pageIndex == 1)
+                                                        {
+                                                            <button class="btn" disabled>Previous</button>
+                                                        }
+                                                        else
+                                                        {
+                                                            <a href="@Url.Action("ChangePageOrder","User",new {pageIndex = pageIndex-1 })" class="btn">Previous</a>
+                                                        }
+                                                        &nbsp;
+                                                        <span style="font-weight:bold; font-size:20px;">@listOrder.pageIndex/@listOrder.totalPages</span>
+                                                        &nbsp;
+                                                        @if (listOrder.pageIndex == listOrder.totalPages)
+                                                        {
+                                                            <button class="btn" disabled>Next</button>
+                                                        }
+                                                        else
+                                                        {
+                                                            <a href="@Url.Action("ChangePageOrder","User",new {pageIndex = listOrder.pageIndex +1 })" class="btn">Next</a>
+                                                        }
+                                                    </div>
+                                                </div>
+                                            }
+                                        }
+                                        <!-- Pagination Start -->
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="tab-pane fade show active" id="account-tab" role="tabpanel" aria-labelledby="account-nav">
+                                        <h4>Account Details</h4>
+                                        <form action="/User/UserUpdate" method="post">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <label>First Name</label>
+                                                    <input class="form-control" type="text" name="usFName" placeholder="First Name" value="@Model.name">
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label>Last Name</label>
+                                                    <input class="form-control" type="text" name="usLName" placeholder="Last Name" value="@Model.surname">
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label>Phone Number</label>
+                                                    <input class="form-control" type="text" name="usPhone" placeholder="Mobile" value="@Model.phone">
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label>Email</label>
+                                                    <input class="form-control" type="text" placeholder="Email" value="@Model.email" disabled>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label>Picutre</label>
+                                                    <input class="form-control" name="usPicture" type="file" value="">
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label>Date Of Birth</label>
+                                                    <input class="form-control" type="date" name="usBirthday" value="@Model.birthDay.Value.ToString("yyyy-MM-dd")">
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label>Gender</label>
+                                                    <div>
+                                                        @{
+                                                            if (Model.gender == 1)
+                                                            {
+                                                                <label>
+                                                                    <input type="radio" name="usGender" value="1" checked>&nbsp;Boy
+                                                                </label>
+                                                                <span>&nbsp;</span>
+                                                                <label>
+                                                                    <input type="radio" name="usGender" value="0">&nbsp;Girl
+                                                                </label>
+                                                            }
+                                                            else
+                                                            {
+                                                                <label>
+                                                                    <input type="radio" name="usGender" value="1">&nbsp;Boy
+                                                                </label>
+                                                                <span>&nbsp;</span>
+                                                                <label>
+                                                                    <input type="radio" name="usGender" value="0" checked>&nbsp;Girl
+                                                                </label>
+                                                            }
+                                                        }
+
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label>Address</label>
+                                                    <input class="form-control" type="text" name="usAddress" placeholder="Address" value="@Model.address">
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <input type="submit" class="btn" value="Update Account" />
+                                                    <br><br>
+                                                </div>
+
+                                            </div>
+                                        </form>
+                                        <h4>Password change</h4>
+                                        <form action="/User/UserPasswordChange" method="post">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <label>Current Password</label>
+                                                    <input class="form-control" name="oldPassword" type="password" placeholder="Current Password" required>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label>New Password</label>
+                                                    <input class="form-control" name="newPassword" type="password" placeholder="New Password" required>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label>Confirm Password</label>
+                                                    <input class="form-control" name="reNewPassword" type="password" placeholder="Confirm Password" required>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <input type="submit" value="Save Changes" class="btn" />
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="tab-pane fade" id="orders-tab" role="tabpanel" aria-labelledby="orders-nav">
+                                        <div class="table-responsive">
+                                            @if (listOrder.data.Count > 0)
+                                            {
+                                                <table class="table table-bordered">
+                                                    <thead class="thead-dark">
+                                                        <tr>
+                                                            <th>No</th>
+                                                            <th>Order Id</th>
+                                                            <th>Date</th>
+                                                            <th>Price</th>
+                                                            <th>Status</th>
+                                                            <th>Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @if (listOrder.totalCount > 0)
+                                                        {
+                                                            int index = 1;
+                                                            foreach (var item in listOrder.data)
+                                                            {
+                                                                <tr>
+                                                                    <td>@(index++)</td>
+                                                                    <td>@item.orderId</td>
+                                                                    <td>@item.creationTime.ToString("yyyy/MM/dd")</td>
+                                                                    <td>@(String.Format("{0:n0}",Decimal.Round(item.totalPrice)))</td>
+                                                                    <td>@item.status</td>
+                                                                    <td><a href="@Url.Action("Order_Details","User",new {id = item.orderId })" class="btn">View</a></td>
+                                                                </tr>
+                                                            }
+                                                        }
+                                                    </tbody>
+                                                </table>
+                                            }
+                                            else
+                                            {
+                                                <h2 class="text-center">Empty!<br /> You haven't make any order.</h2>
+                                            }
+                                        </div>
+                                        <!-- Pagination Start -->
+                                        @if (listOrder != null)
+                                        {
+                                            if (listOrder.totalPages > 0)
+                                            {
+                                                int pageIndex = 1;
+                                                if (listOrder.pageIndex > 1)
+                                                {
+                                                    pageIndex = listOrder.pageIndex;
+                                                }
+                                                <div class="quantity text-center">
+                                                    <div class="">
+                                                        @if (listOrder.pageIndex == 1)
+                                                        {
+                                                            <button class="btn" disabled>Previous</button>
+                                                        }
+                                                        else
+                                                        {
+                                                            <a href="@Url.Action("ChangePageOrder","User",new {pageIndex = pageIndex-1 })" class="btn">Previous</a>
+                                                        }
+                                                        &nbsp;
+                                                        <span style="font-weight:bold; font-size:20px;">@listOrder.pageIndex/@listOrder.totalPages</span>
+                                                        &nbsp;
+                                                        @if (listOrder.pageIndex == listOrder.totalPages)
+                                                        {
+                                                            <button class="btn" disabled>Next</button>
+                                                        }
+                                                        else
+                                                        {
+                                                            <a href="@Url.Action("ChangePageOrder","User",new {pageIndex = listOrder.pageIndex +1 })" class="btn">Next</a>
+                                                        }
+                                                    </div>
+                                                </div>
+                                            }
+                                        }
+                                        <!-- Pagination Start -->
+                                    </div>
+                                }
+                            }
+
+                            <div class="tab-pane fade" id="shop-tab" role="tabpanel" aria-labelledby="shop-nav">
+                                @{
+                                    if (!Model.roles.Contains("Seller"))
+                                    {
+                                        <h4>Open Shop</h4>
+                                        <p>
+                                            Open your own shop and sell everything you want !
+                                        </p>
+                                        <form action="/" method="post">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <label>Shop Name</label>
+                                                    <input class="form-control" name="shopName" type="text" placeholder="Shop Name" required>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label>Shop Email</label>
+                                                    <input class="form-control" name="shopEmail" type="text" placeholder="Shop Email" required>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label>Shop Phone</label>
+                                                    <input class="form-control" name="shopPhone" type="text" placeholder="Shop Phone" required>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label>Shop Address</label>
+                                                    <input class="form-control" name="shopAddress" type="text" placeholder="Shop Address" required>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <input type="submit" value="Register" class="btn" />
+                                                </div>
+                                            </div>
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <h4>Opened</h4>
+                                        <p>
+                                            Your have become a Seller!.
+                                            <a href="#">Click here </a> to download the software management for Seller
+                                        </p>
+                                    }
+                                }
+
+                            </div>
+                            <div class="tab-pane fade" id="payment-tab" role="tabpanel" aria-labelledby="payment-nav">
+                                <h4>Payment Method</h4>
+                                <p>
+                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. In condimentum quam ac mi viverra dictum. In efficitur ipsum diam, at dignissim lorem tempor in. Vivamus tempor hendrerit finibus. Nulla tristique viverra nisl, sit amet bibendum ante suscipit non. Praesent in faucibus tellus, sed gravida lacus. Vivamus eu diam eros. Aliquam et sapien eget arcu rhoncus scelerisque.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- My Account End -->
+    }
+}

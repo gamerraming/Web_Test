@@ -1,0 +1,150 @@
+﻿@{
+    ViewBag.Title = "HTech Website";
+    Layout = "~/Views/_Layout/_layout.cshtml";
+}
+<!-- Breadcrumb Start -->
+<div class="breadcrumb-wrap">
+    <div class="container-fluid">
+        <ul class="breadcrumb">
+            <li class="breadcrumb-item"><a href="@Url.Action("Index","Home")">Home</a></li>
+            <li class="breadcrumb-item active">Login & Register</li>
+        </ul>
+    </div>
+</div>
+<!-- Breadcrumb End -->
+<!-- Login Start -->
+<div class="login">
+    <div class="container-fluid">
+        @{
+            if (ViewBag.usRegister != null)
+            {
+                if ((bool)ViewBag.usRegister)
+                {
+                    <div class="alert alert-success">
+                        <strong>Success!</strong> Register Successfully <i class="far fa-check-circle"></i>
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-danger">
+                        <strong>Fail!</strong> Please try again <i class="far fa-times-circle"></i>
+                    </div>
+                }
+            }
+
+            if (ViewBag.usLogin != null)
+            {
+                if ((bool)ViewBag.usLogin == false)
+                {
+                    <div class="alert alert-danger">
+                        <strong>Fail!</strong> Username/Email or Password wrong ! <i class="far fa-times-circle"></i>
+                    </div>
+                }
+
+            }
+        }
+        <div class="alert alert-danger" hidden id="alertPasswordCheck">
+            <strong>Try again!</strong> Please enter the same password ! <i class="far fa-times-circle"></i>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="register-form">
+                    <form action="/User/CheckRegister" method="post">
+                        <h2 class="text-center">Register</h2>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label><strong>*</strong>E-mail</label>
+                                <input class="form-control" name="usEmail" type="text" placeholder="E-mail" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label><strong>*</strong>Username</label>
+                                <input class="form-control" name="usUsername" type="text" placeholder="Username" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label><strong>*</strong>Password</label>
+                                <input class="form-control" id="usPassword" name="usPassword" type="password" placeholder="Password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters" required>
+                            </div>
+                            <span id='message'></span>
+                            <div class="col-md-6">
+                                <label><strong>*</strong>Retype Password</label>
+                                <input class="form-control" id="usRePassword" name="usRePassword" type="password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters" placeholder="Password" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label>First Name</label>
+                                <input class="form-control" name="usFName" type="text" placeholder="First Name">
+                            </div>
+                            <div class="col-md-6">
+                                <label>Last Name</label>
+                                <input class="form-control" name="usLName" type="text" placeholder="Last Name">
+                            </div>
+                            <div class="col-md-12">
+                                <label><strong>*</strong>Phone Number</label>
+                                <input class="form-control" name="usPhone" type="text" placeholder="Phone Number" required>
+                            </div>
+                            <div class="col-md-12">
+                                <input type="submit" id="btnRegister" value="Register" class="btn" />
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="login-form">
+                    <form action="/User/CheckLogin" method="post">
+                        <h2 class="text-center">Login</h2>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>E-mail / Username</label>
+                                <input class="form-control" name="usernameLogin" type="text" placeholder="E-mail / Username" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label>Password</label>
+                                <input class="form-control" name="passwordLogin" type="password" placeholder="Password" required>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="newaccount">
+                                    <label class="custom-control-label" for="newaccount">Keep me signed in</label>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <input type="submit" value="Login" class="btn" />
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Login End -->
+<!--/// JS ///-->
+<script>
+    //hide message errors
+    setInterval(function () { $('.alert:not(#alertPasswordCheck)').attr("hidden", true); }, 5000);
+
+    //check confirm password
+    $('#usPassword, #usRePassword').on('keyup', function () {
+        if ($('#usPassword').val() == $('#usRePassword').val()) {
+            $('#usPassword').css('color', 'green');
+            $('#usRePassword').css('color', 'green');
+            $('#btnRegister').attr("type", "submit");
+            setInterval(function () {
+                $('#usPassword').removeAttr("style");
+                $('#usRePassword').removeAttr("style");
+            }, 3000);
+        } else {
+            $('#usPassword').css('color', 'red');
+            $('#usRePassword').css('color', 'red');
+            $('#btnRegister').attr("type", "button");
+        }
+    });
+    $('#btnRegister').click(function () {
+        if ($('#usPassword').val() != $('#usRePassword').val()) {
+            $('#alertPasswordCheck').removeAttr("hidden", false);
+            setInterval(function () {
+                $('#alertPasswordCheck').attr("hidden", true);
+            }, 3500);
+        }
+    });
+</script>
