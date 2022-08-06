@@ -116,11 +116,12 @@ namespace HTechWeb.Controllers
             TempData["idProduct"] = id;
             return RedirectToAction("Product_Details", "Shop");
         }
-        public ActionResult UpdateCart(string id)
+        public ActionResult UpdateCart(string id,string pId,string pVId)
         {
             if (id != null)
-            {
+            {   
                 int qty = 1;
+                var data = ProductConnect.GetDataProductAsync(pId).Result.result;
                 int cartQuantity = CartConnect.GetListCart().Result.result.Count;
                 for (int i = 0; i < cartQuantity; i++)
                 {
@@ -130,7 +131,10 @@ namespace HTechWeb.Controllers
                         break;
                     }
                 }
-                if (qty <= 0) return View("Cart");
+                var dataV = data.productVariations.Where(x => x.productVariationId == pVId).ToList()[0];
+                if (qty > dataV.quantity) qty = dataV.quantity;
+                if (qty < 0) return View("Cart");
+                else if (qty == 0) return RedirectToAction("RemoveCart", new { id = id });
                 if (GlobalV.USER_TOKEN != "")
                 {
                     CartConnect.CartUpdateAsync(new UpdateCartRequest { cartDetailId = id, quantity = qty });
@@ -154,20 +158,6 @@ namespace HTechWeb.Controllers
             }
             return RedirectToAction("Cart");
         }
-        public ActionResult BuyNow(string id)
-        {
-            if (GlobalV.USER_TOKEN != "")
-            {
-                //var dataP = ProductConnect.GetDataProductAsync(id).Result;
-                //if (id != null && id.Trim() != "")
-                //{
-                //    TempData["productId"] = id;
-                //    return RedirectToAction("Order_Details");
-                //}
-                //return RedirectToAction("Product_Details", "Shop", id);
-            }
-            return RedirectToAction("Login", "User");
-        }
         #endregion
 
         #region Purchase
@@ -180,20 +170,6 @@ namespace HTechWeb.Controllers
                 if (!voucher.Contains("blankVoucher")) Session.Add("IdVoucher", voucher);
                 //Voucher Process End
                 //--
-                //Shipment Process Start
-                //var shipmentList = ShipmentConnect.GetListShipment(new GetListShipmentRequest { PageIndex = GlobalV.PAGE_INDEX }).Result.result;
-                //var listShipment = new List<ShipmentGetResponse.Result>();
-                //if (shipmentList != null)
-                //{
-                //    if (shipmentList.data.Count > 0)
-                //    {
-                //        foreach (var item in shipmentList.data)
-                //        {
-                //            listShipment.Add(ShipmentConnect.GetDataShipmentAsync(item.shipmentId).Result.result);
-                //        }
-                //    }
-                //}
-                //ViewBag.listShipment = listShipment;
                 ViewBag.listShipment = ShipmentConnect.GetListShipment(new GetListShipmentRequest { PageIndex = GlobalV.PAGE_INDEX }).Result.result; ;
                 //Shipment Process End
                 //--

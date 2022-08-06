@@ -153,6 +153,25 @@
                                         </form>
                                     </div>
                                     <div class="tab-pane fade show active" id="orders-tab" role="tabpanel" aria-labelledby="orders-nav">
+                                        <div class="row">
+                                            <div class="col-md-8 col-8">
+                                                <select class="custom-select" id="statusSelect">
+                                                    <option value=""></option>
+                                                    <option value="Approved">Approved</option>
+                                                    <option value="Pending">Pending</option>
+                                                    <option value="Cancelled">Cancelled</option>
+                                                    <option value="Shipping">Shipping</option>
+                                                </select>
+                                                <script>
+                                                    $('#statusSelect').on("change", function () {
+                                                        location.href = "/User/FilterOrder/" + $(this).val();
+                                                    });
+                                                </script>
+                                            </div>
+                                            <div class="col-md-4 col-4">
+                                                <a href="@Url.Action("FilterOrder","User")" class="btn">Show All</a>
+                                            </div>
+                                        </div>
                                         <div class="table-responsive">
                                             @if (listOrder.data.Count > 0)
                                             {
@@ -320,6 +339,25 @@
                                         </form>
                                     </div>
                                     <div class="tab-pane fade" id="orders-tab" role="tabpanel" aria-labelledby="orders-nav">
+                                        <div class="row">
+                                            <div class="col-md-8 col-8">
+                                                <select class="custom-select" id="statusSelect">
+                                                    <option value=""></option>
+                                                    <option value="Approved">Approved</option>
+                                                    <option value="Pending">Pending</option>
+                                                    <option value="Cancelled">Cancelled</option>
+                                                    <option value="Shipping">Shipping</option>
+                                                </select>
+                                                <script>
+                                                    $('#statusSelect').on("change", function () {
+                                                        location.href = "/User/FilterOrder/" + $(this).val();
+                                                    });
+                                                </script>
+                                            </div>
+                                            <div class="col-md-4 col-4">
+                                                <a href="@Url.Action("FilterOrder","User")" class="btn">Show All</a>
+                                            </div>
+                                        </div>
                                         <div class="table-responsive">
                                             @if (listOrder.data.Count > 0)
                                             {

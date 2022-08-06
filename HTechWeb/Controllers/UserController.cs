@@ -162,11 +162,6 @@ namespace HTechWeb.Controllers
                     if ((bool)TempData["updateUser"]) ViewBag.updateUser = true;
                     else ViewBag.updateUser = false;
                 }
-                if (id != null)
-                {
-                    ViewBag.eventActionUser = "";
-                    if (id == "orderListShow") ViewBag.eventActionUser = "orderListShow";
-                }
                 return View(Session["User"] as UserProfileResponse.Result);
             }
             return RedirectToAction("Login");
@@ -186,6 +181,16 @@ namespace HTechWeb.Controllers
         #endregion
 
         #region Process Other
+        //Filter Order
+        public ActionResult FilterOrder(string id)
+        {
+            if (id == null) id = "";
+            Session["ListOrder"] = OrderConnect.GetListOrder(new GetListOrderRequest { PageIndex = GlobalV.PAGE_INDEX, FilterByStatus = id }).Result.result;
+            TempData["showListOrder"] = true;
+            return RedirectToAction("User_Profile");
+        }
+
+
         //Change page Order
         public ActionResult ChangePageOrder(int pageIndex)
         {

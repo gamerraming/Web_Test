@@ -54,14 +54,14 @@
                                                 <tr>
                                                     <td>
                                                         <div class="img">
-                                                            <a href="#"><img src="@Url.Content(item.productImage)" alt="Image"></a>
+                                                            <a href="@Url.Action("Product_Details","Shop",new { id = item.productId })"><img src="@Url.Content(item.productImage)" alt="Image"></a>
                                                             <p><strong>@item.productName</strong><br />@item.productVariantName</p>
                                                         </div>
                                                     </td>
                                                     <td>$@item.price.ToString("#,###", System.Globalization.CultureInfo.GetCultureInfo("vi-VN"))</td>
                                                     <td>
                                                         <div class="qty">
-                                                            <form action="/Home/UpdateCart/@item.cartDetailId" id="formUpdateCart_@index" method="post" hidden></form>
+                                                            <form action="@Url.Action("UpdateCart","Home",new {id=item.cartDetailId,pId=item.productId,pVId=item.productVariantId })" id="formUpdateCart_@index" method="post" hidden></form>
                                                             <button form="formUpdateCart_@index" class="btn-minus"><i class="fa fa-minus"></i></button>
                                                             <input form="formUpdateCart_@index" type="text" id="quantityProduct_@index" name="quantityProduct_@index" value="@item.quantity">
                                                             <button form="formUpdateCart_@index" class="btn-plus"><i class="fa fa-plus"></i></button>
@@ -73,8 +73,7 @@
                                                 <script>
                                                     //check Product QUantity
                                                     $('#quantityProduct_@index').change(function () {
-                                                        if ($(this).val() <= 0) $(this).val("1");
-                                                        else $(this).val((parseInt($(this).val())+1).toString())
+                                                        if ($(this).val() >= 0) $(this).val((parseInt($(this).val()) + 1).toString());
                                                     });
                                                 </script>
 
@@ -83,8 +82,6 @@
                                             }
                                         }
                                     }
-
-
                                 }
                             </tbody>
                         </table>

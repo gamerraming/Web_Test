@@ -14,6 +14,7 @@
         getShop = ViewBag.getShop as HTechWeb.Models.DTO.Shop.Response.ShopGetResponse.Result;
     }
     int proQty = 0;
+    string modeBN = "BuyNow";
 }
 <!-- Breadcrumb Start -->
 <div class="breadcrumb-wrap">
@@ -72,7 +73,7 @@
                                 <div class="col-md-7">
                                     <div class="product-content">
 
-                                        <form action="/Home/BuyNow" id="formBuyNow" method="post"></form>
+                                        <form action="@Url.Action("AddToCart","Home",new { id = @Model.result.productId, qty = 1,mode=modeBN})" id="formBuyNow" method="post"></form>
                                         <form action="/Home/AddToCart/@Model.result.productId" id="formAddToCart" method="post">
                                             <div class="title"><h2>@Model.result.productName</h2></div>
                                             <div class="ratting">
@@ -144,7 +145,7 @@
                                             </div>
                                             <div class="action">
                                                 <a class="btn" id="btnAddToCart" href="javascript:;" onclick="formAddToCart.submit();"><i class="fa fa-shopping-cart"></i>Add to Cart</a>
-                                                <a class="btn" id="btnBuyNow" href="javascript:;" hidden onclick="formBuyNow.submit();"><i class="fa fa-shopping-bag"></i>Buy Now</a>
+                                                <a class="btn" id="btnBuyNow" href="javascript:;" onclick="formBuyNow.submit();"><i class="fa fa-shopping-bag"></i>Buy Now</a>
                                             </div>
 
                                         </form>
@@ -475,7 +476,7 @@
         var quantity = $('#productVariant').val().split("/")[2];
         if (quantity > 0) {
             if ($(this).val() <= 0) $(this).val("1");
-            else if ($(this).val() > quantity) $(this).val(quantity);
+            else if (parseInt($(this).val()) > quantity) $('#quantityProduct').val(quantity);
         }
     });
 
@@ -484,7 +485,7 @@
         var quantity = $('#productVariant').val().split("/")[2];
         if (quantity > 0) {
             if ($('#quantityProduct').val() <= 0) $('#quantityProduct').val("1");
-            else if ($('#quantityProduct').val() > quantity) $('#quantityProduct').val(quantity);
+            else if (parseInt($('#quantityProduct').val()) > quantity) $('#quantityProduct').val(quantity);
         }
     }, 500);
 </script>
